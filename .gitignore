@@ -2,6 +2,9 @@
 __pycache__/
 *.py[codz]
 *$py.class
+.coverage
+htmlcov/
+*.egg-info/
 
 # Environments
 .env
@@ -27,3 +30,6 @@ dmypy.json
 
 # Ruff stuff:
 .ruff_cache/
+
+# Pytest
+.pytest_cache/
