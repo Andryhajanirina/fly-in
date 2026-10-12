@@ -7,7 +7,7 @@
 #   By: andry-ha <andry-ha@student.42antananarivo.   +#+  +:+       +#+       #
 #                                                  +#+#+#+#+#+   +#+          #
 #   Created: 2026/10/04 11:41:55 by andry-ha            #+#    #+#            #
-#   Updated: 2026/10/12 14:27:50 by andry-ha           ###   ########.fr      #
+#   Updated: 2026/10/12 14:45:43 by andry-ha           ###   ########.fr      #
 #                                                                             #
 # ########################################################################### #
 
@@ -17,6 +17,11 @@ from .connection import Connection
 
 class ZoneNotFoundError(Exception):
     """Exception raised when a zone is not found in the graph."""
+    pass
+
+
+class DuplicateZoneError(Exception):
+    """Exception raised when a zone already exists."""
     pass
 
 
@@ -34,6 +39,12 @@ class Graph:
         self._neighbors: dict[str, list[Zone]] = {}
 
     def add_zone(self, zone: Zone) -> None:
+        """Add a zone to the graph."""
+        if zone.name in self._zones:
+            raise DuplicateZoneError(
+                f"The zone '{zone.name}' already exists."
+            )
+
         self._zones[zone.name] = zone
         self._neighbors[zone.name] = []
 
