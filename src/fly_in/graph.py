@@ -7,7 +7,7 @@
 #   By: andry-ha <andry-ha@student.42antananarivo.   +#+  +:+       +#+       #
 #                                                  +#+#+#+#+#+   +#+          #
 #   Created: 2026/10/04 11:41:55 by andry-ha            #+#    #+#            #
-#   Updated: 2026/10/04 13:50:05 by andry-ha           ###   ########.fr      #
+#   Updated: 2026/10/12 14:27:50 by andry-ha           ###   ########.fr      #
 #                                                                             #
 # ########################################################################### #
 
@@ -17,6 +17,11 @@ from .connection import Connection
 
 class ZoneNotFoundError(Exception):
     """Exception raised when a zone is not found in the graph."""
+    pass
+
+
+class DuplicateConnectionError(Exception):
+    """Exception raised when a connection already exists."""
     pass
 
 
@@ -41,6 +46,7 @@ class Graph:
             ) from error
 
     def add_connection(self, connection: Connection) -> None:
+        """Add a bidirectional connection to the graph."""
         if (connection.zone_a.name not in self._zones):
             raise ZoneNotFoundError(
                 f"The zone '{connection.zone_a.name}' is unknown."
@@ -50,6 +56,22 @@ class Graph:
             raise ZoneNotFoundError(
                 f"The zone '{connection.zone_b.name}' is unknown."
             )
+
+        for existing in self._connections:
+            same_order = (
+                existing.zone_a.name == connection.zone_a.name
+                and existing.zone_b.name == connection.zone_b.name
+            )
+
+            reverse_order = (
+                existing.zone_a.name == connection.zone_b.name
+                and existing.zone_b.name == connection.zone_a.name
+            )
+
+            if same_order or reverse_order:
+                raise DuplicateConnectionError(
+                    "This connection already exists."
+                )
 
         self._connections.append(connection)
         self._neighbors[connection.zone_a.name].append(

@@ -7,13 +7,13 @@
 #   By: andry-ha <andry-ha@student.42antananarivo.   +#+  +:+       +#+       #
 #                                                  +#+#+#+#+#+   +#+          #
 #   Created: 2026/10/04 11:47:16 by andry-ha            #+#    #+#            #
-#   Updated: 2026/10/12 13:01:29 by andry-ha           ###   ########.fr      #
+#   Updated: 2026/10/12 14:36:39 by andry-ha           ###   ########.fr      #
 #                                                                             #
 # ########################################################################### #
 
 from fly_in.zone import Zone
 from fly_in.connection import Connection
-from fly_in.graph import Graph, ZoneNotFoundError
+from fly_in.graph import Graph, ZoneNotFoundError, DuplicateConnectionError
 import pytest
 
 
@@ -78,3 +78,22 @@ def test_add_connection_with_existent_zone_and_inexistent_zone() -> None:
         graph.add_connection(connection)
     assert graph._connections == []
     assert graph.get_neighbors(zone_a) == []
+
+
+def test_add_duplicate_connection_in_reverse_order() -> None:
+    graph = Graph()
+
+    zone_a = Zone("A", 0, 0)
+    zone_b = Zone("B", 1, 0)
+
+    graph.add_zone(zone_a)
+    graph.add_zone(zone_b)
+
+    graph.add_connection(Connection(zone_a, zone_b))
+
+    with pytest.raises(DuplicateConnectionError):
+        graph.add_connection(Connection(zone_b, zone_a))
+
+    assert len(graph._connections) == 1
+    assert graph.get_neighbors(zone_a) == [zone_b]
+    assert graph.get_neighbors(zone_b) == [zone_a]
