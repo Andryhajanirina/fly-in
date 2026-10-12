@@ -7,7 +7,7 @@
 #   By: andry-ha <andry-ha@student.42antananarivo.   +#+  +:+       +#+       #
 #                                                  +#+#+#+#+#+   +#+          #
 #   Created: 2026/10/04 11:47:16 by andry-ha            #+#    #+#            #
-#   Updated: 2026/10/04 13:59:29 by andry-ha           ###   ########.fr      #
+#   Updated: 2026/10/12 13:01:29 by andry-ha           ###   ########.fr      #
 #                                                                             #
 # ########################################################################### #
 
@@ -76,3 +76,5 @@ def test_add_connection_with_existent_zone_and_inexistent_zone() -> None:
     with pytest.raises(ZoneNotFoundError):
         connection = Connection(zone_a, zone_b)
         graph.add_connection(connection)
+    assert graph._connections == []
+    assert graph.get_neighbors(zone_a) == []
